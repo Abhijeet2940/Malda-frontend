@@ -1,3 +1,8 @@
+import maldaInstituePhoto from './Assets/maldaInstituePhoto.jpeg';
+import sahebangRailwayInstitute from './Assets/sahebangRailwayInstitute.jpeg';
+import bhagalpurStage from './Assets/bhagalpurStage.jpeg';
+
+
 export interface Institute {
   id: string;
   name: string;
@@ -67,7 +72,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Malda Institute premises."
     ],
     images: [
-      "/src/Assets/maldaInstituePhoto.jpeg",
+      maldaInstituePhoto
     ],
     highlighted: true,
   },
@@ -113,7 +118,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Sahibganj Institute premises."
     ],
     images: [
-      "src/Assets/sahebangRailwayInstitute.jpeg"
+      sahebangRailwayInstitute
     ],
     blocked: true,
   },
@@ -159,7 +164,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Bhagalpur Institute premises."
     ],
     images: [
-      "src/Assets/bhagalpurStage.jpeg"
+      bhagalpurStage
 
     ],
     blocked: true,
