@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import indianRailwaysLogo from "../Assests/Indian Railways.png";
+import indianRailwaysLogo from "../Assets/Indian Railways.png";
 
 export const Footer: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
