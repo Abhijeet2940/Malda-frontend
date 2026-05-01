@@ -72,7 +72,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Malda Institute premises."
     ],
     images: [
-      maldaInstituePhoto
+      maldaInstituePhoto,
     ],
     highlighted: true,
   },
@@ -118,7 +118,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Sahibganj Institute premises."
     ],
     images: [
-      sahebangRailwayInstitute
+      sahebangRailwayInstitute,
     ],
     blocked: true,
   },
@@ -164,7 +164,7 @@ export const institutes: Institute[] = [
       "Blasting or use of firecrackers is strictly prohibited within Bhagalpur Institute premises."
     ],
     images: [
-      bhagalpurStage
+      bhagalpurStage,
 
     ],
     blocked: true,
