@@ -1,6 +1,6 @@
-import maldaInstituePhoto from './Assets/maldaInstituePhoto.jpeg';
-import sahebangRailwayInstitute from './Assets/sahebangRailwayInstitute.jpeg';
-import bhagalpurStage from './Assets/bhagalpurStage.jpeg';
+import maldaInstituePhoto from '../Assets/maldaInstituePhoto.jpeg';
+import sahebangRailwayInstitute from '../Assets/sahebangRailwayInstitute.jpeg';
+import bhagalpurStage from '../Assets/bhagalpurStage.jpeg';
 
 
 export interface Institute {
