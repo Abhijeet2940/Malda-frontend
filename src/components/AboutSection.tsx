@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { institutes } from "../data/institutes";
-import indianRailwaysLogo from "../Assests/sr-dpo.jpeg";
-import maldaRailway from "../Assests/mriFront.jpeg";
+import indianRailwaysLogo from "../Assets/sr-dpo.jpeg";
+import maldaRailway from "../Assets/mriFront.jpeg";
 
 const headerCarouselImages = [
   { src: maldaRailway, alt: "Malda Railway" },
