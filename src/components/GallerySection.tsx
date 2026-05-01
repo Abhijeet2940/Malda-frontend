@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { institutes } from "../data/institutes";
-import hallMRI from "../Assests/hallMRI.jpeg";
-import decorationHall from "../Assests/decorationHall.jpeg";
-import marriageAuditorium from "../Assests/marriage-audotorium.jpeg";
-import mriFront from "../Assests/mriFront.jpeg";
-import sahebganjFront from "../Assests/sahebganj-front.jpeg";
-import sahebganjStage from "../Assests/sahebganj-stage.jpeg";
-import sahebganjaudotrium from "../Assests/sahebganj-audotorium.jpeg";
-import sahebganjInstitute from "../Assests/sahebangRailwayInstitute.jpeg";
-import BhagalpurAuditorium from "../Assests/Bhagalpur-Audotorium.jpeg";
-import BhagalpurFront from "../Assests/Bhagalpur-front.jpeg";
-import BhagalpurStage from "../Assests/bhagalpurStage.jpeg";
-import BhagalpurMain from "../Assests/Bhagalpur-main.jpeg";
+import hallMRI from "../Assets/hallMRI.jpeg";
+import decorationHall from "../Assets/decorationHall.jpeg";
+import marriageAuditorium from "../Assets/marriage-audotorium.jpeg";
+import mriFront from "../Assets/mriFront.jpeg";
+import sahebganjFront from "../Assets/sahebganj-front.jpeg";
+import sahebganjStage from "../Assets/sahebganj-stage.jpeg";
+import sahebganjaudotrium from "../Assets/sahebganj-audotorium.jpeg";
+import sahebganjInstitute from "../Assets/sahebangRailwayInstitute.jpeg";
+import BhagalpurAuditorium from "../Assets/Bhagalpur-Audotorium.jpeg";
+import BhagalpurFront from "../Assets/Bhagalpur-front.jpeg";
+import BhagalpurStage from "../Assets/bhagalpurStage.jpeg";
+import BhagalpurMain from "../Assets/Bhagalpur-main.jpeg";
 
 
 
