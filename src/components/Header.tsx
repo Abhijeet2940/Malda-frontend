@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { institutes } from "../data/institutes";
-import indianRailwaysLogo from "../Assests/Indian Railways.png";
+import indianRailwaysLogo from "../Assets/Indian Railways.png";
 
 export const Header: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
