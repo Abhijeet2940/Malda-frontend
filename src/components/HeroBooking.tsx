@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import maldastation from "../Assests/drmOffice.jpg";
+import maldastation from "../Assets/drmOffice.jpg";
 import { institutes } from "../data/institutes";
 
 
