@@ -3,7 +3,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { institutes } from "../data/institutes";
 import { bookingAPI, requestsAPI, blockedDatesAPI } from "../services/api";
 import "../styles.css";
-import maldaQR from "../Assests/MaldaQR.jpeg";
+import maldaQR from "../Assets/MaldaQR.jpeg";
 
 export const BookingFormPage: React.FC = () => {
   const [step, setStep] = useState(1);
