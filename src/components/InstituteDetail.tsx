@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getInstituteById, institutes } from "../data/institutes";
-import mriFront from "../Assests/mriFront.jpeg";
-import stageMRI from "../Assests/stageMRI.jpeg";
-import hallMRI from "../Assests/hallMRI.jpeg";
-import decorationHall from "../Assests/decorationHall.jpeg";
-import marriageAuditorium from "../Assests/marriage-audotorium.jpeg";
-import stageMRI2 from "../Assests/stageMRI2.jpeg";
-import sahebganjFront from "../Assests/sahebganj-front.jpeg";
-import sahebganjStage from "../Assests/sahebganj-stage.jpeg";
-import sahebganjInstitute from "../Assests/sahebangRailwayInstitute.jpeg";
-import BhagalpurAuditorium from "../Assests/Bhagalpur-Audotorium.jpeg";
-import BhagalpurHall from "../Assests/Bhagalpur-hall.jpeg";
-import BhagalpurStage from "../Assests/bhagalpurStage.jpeg";
-import BhagalpurMain from "../Assests/Bhagalpur-main.jpeg";
+import mriFront from "../Assets/mriFront.jpeg";
+import stageMRI from "../Assets/stageMRI.jpeg";
+import hallMRI from "../Assets/hallMRI.jpeg";
+import decorationHall from "../Assets/decorationHall.jpeg";
+import marriageAuditorium from "../Assets/marriage-audotorium.jpeg";
+import stageMRI2 from "../Assets/stageMRI2.jpeg";
+import sahebganjFront from "../Assets/sahebganj-front.jpeg";
+import sahebganjStage from "../Assets/sahebganj-stage.jpeg";
+import sahebganjInstitute from "../Assets/sahebangRailwayInstitute.jpeg";
+import BhagalpurAuditorium from "../Assets/Bhagalpur-Audotorium.jpeg";
+import BhagalpurHall from "../Assets/Bhagalpur-hall.jpeg";
+import BhagalpurStage from "../Assets/bhagalpurStage.jpeg";
+import BhagalpurMain from "../Assets/Bhagalpur-main.jpeg";
 
 const maldaImages = [
   { src: mriFront, alt: "Institute Front" },
