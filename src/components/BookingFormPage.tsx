@@ -174,14 +174,13 @@ export const BookingFormPage: React.FC = () => {
       
       const railwayValidation = (isRailwayEmployee || isContractEmployee) && (formData.railwayEmployeeId && formData.employeeIdProof);
       const nonMemberValidation = isNonMemberEmployee && (formData.nonMemberEmployeeId && formData.nonMemberEmployeeIdProof);
-      const nonRailwayValidation = isNonRailwayPerson && (formData.guarantorName && formData.guarantorEmployeeId && formData.guarantorPhone && formData.guarantorFile);
       const exMemberValidation = isExMember && formData.ppoNumber && formData.ppoFile;
       
       if (dateUnavailable) {
         alert("This date is already booked for the selected institute. Please choose another date.");
         return;
       }
-      if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isNonRailwayPerson || nonRailwayValidation) && (!isExMember || exMemberValidation)) {
+            if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isExMember || exMemberValidation)) {
         setStep(2);
       } else {
         alert("Please fill all required fields");
