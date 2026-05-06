@@ -96,8 +96,8 @@ const constructFileUrl = (fileType: string | null, bookingId: string | null): st
   };
 
   const mappedType = fileTypeMap[fileType] || fileType;
-  const downloadUrl = `http://localhost:8080/api/requests/${bookingId}/download/${mappedType}`;
-  
+  const apiBaseUrl = import.meta.env.VITE_API_URL ;
+  const downloadUrl = `${apiBaseUrl}/api/requests/${bookingId}/download/${mappedType}`;
   return downloadUrl;
 };
 
