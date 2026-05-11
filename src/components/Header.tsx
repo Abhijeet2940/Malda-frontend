@@ -74,6 +74,7 @@ export const Header: React.FC = () => {
           </div>
           <NavLink to="/gallery" onClick={handleNavClick}>Gallery</NavLink>
           <NavLink to="/contact" onClick={handleNavClick}>Contact Us</NavLink>
+          <NavLink to="/admin" onClick={handleNavClick}>Admin</NavLink>
         </nav>
       </div>
     </header>
