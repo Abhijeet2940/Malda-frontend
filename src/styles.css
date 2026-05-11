@@ -21,6 +21,7 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .app-root {
@@ -32,8 +33,8 @@ body {
 .container {
   width: 100%;
   max-width: 1260px;
-  margin: 0 2rem;
-  padding: 0 1.25rem;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 /* Header */
@@ -60,7 +61,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
-  margin-left:3rem;
+  margin-left: 0;
   text-decoration: none;
 }
 
@@ -231,8 +232,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
   height: 550px;
   overflow: hidden;
   background: #000;
@@ -264,9 +264,8 @@ body {
 .hero-text {
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
+  left: 0;
+  width: 100%;
   height: 100%;
   z-index: 1;
   border-radius: 0;
@@ -1672,17 +1671,35 @@ select:focus {
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .booking-form-wrapper {
+    padding: 0.5rem;
+  }
+
+  .booking-form-title {
+    padding: 1rem 0.5rem;
+    font-size: 1.2rem;
+  }
+
   .hero {
     min-height: 350px;
   }
 
-  .hero-form-card {
-    max-width: 100%;
-    padding: 1.5rem 1.2rem;
+  .logo {
+    margin-left: 0;
   }
 
-  .institute-card {
-    padding: 1rem;
+  .logo-img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .logo-line1,
+  .logo-line2 {
+    font-size: 0.45rem;
   }
 }
 
@@ -2521,8 +2538,8 @@ select:focus {
 .booking-form-title {
   background-color: var(--primary);
   color: white !important;
-  padding: 2rem 3rem;
-  margin: 0 calc(-52vw + 50%) 1.5rem calc(-50vw + 50%) !important;
+  padding: 2rem 1rem;
+  margin: 0 0 1.5rem 0 !important;
   font-size: 2rem;
   font-weight: 700;
   text-align: center;
@@ -2856,28 +2873,27 @@ select:focus {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
   .booking-form-wrapper {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
-  .booking-form-wrapper h1 {
-    font-size: 1.8rem;
+  .booking-form-title {
+    padding: 1.5rem 1rem;
+    font-size: 1.5rem;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
+  .hero {
+    height: 400px;
+    width:fit-content
   }
 
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .form-actions button {
-    width: 100%;
-  }
-
-  .checkbox-group {
-    grid-template-columns: 1fr;
+  .hero-form-card {
+    margin: 0;
+    max-width: 100%;
   }
 }
 
