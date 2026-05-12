@@ -942,6 +942,7 @@ select:focus {
 
 .about-header-content {
   text-align: left;
+  min-width: 0;
 }
 
 .about-header-content .primary-button {
@@ -953,7 +954,10 @@ select:focus {
   font-weight: 600;
   margin:0;
   color: var(--primary-deep);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
+
 
 .about-header-subtitle {
   font-size: 2rem;
@@ -975,16 +979,24 @@ select:focus {
   align-items: center;
   justify-content: center;
   height: 100%;
+  min-width: 0;
+}
+
+.about-image,
+.about-header-image img,
+.about-carousel-img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .about-image {
-  width: 100%;
-  height: 100%;
-  min-height: 400px;
-  object-fit: cover;
+  min-height: 300px;
   border-radius: 1.2rem;
   box-shadow: 0 8px 30px rgba(0, 74, 173, 0.2);
 }
+
 
 /* About Carousel */
 .about-carousel {
@@ -993,7 +1005,7 @@ select:focus {
   border-radius: 1.2rem;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 74, 173, 0.2);
-  min-height: 400px;
+  min-height: 300px;
 }
 
 .institute-card-carousel {
@@ -1016,8 +1028,9 @@ select:focus {
 .about-carousel-img.active {
   opacity: 1;
   position: relative;
-  min-height: 400px;
+  min-height: 300px;
 }
+
 
 .about-carousel-dots {
   position: absolute;
@@ -1272,6 +1285,7 @@ select:focus {
   background: linear-gradient(135deg, rgba(0, 74, 173, 0.05), rgba(0, 50, 122, 0.05));
   border-radius: 1rem;
   border-left: 4px solid var(--primary);
+  min-width: 0;
 }
 
 .team-head-image {
@@ -1497,10 +1511,13 @@ select:focus {
 
   .about-header-content {
     text-align: center;
+    min-width: 0;
   }
 
   .about-header h1 {
     font-size: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .about-header-subtitle {
@@ -1509,6 +1526,13 @@ select:focus {
 
   .about-header-description {
     font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+
+  .about-header-image,
+  .about-carousel,
+  .about-carousel-img.active {
+    min-height: 250px;
   }
 
   .about-header-image .image-placeholder {
@@ -1789,7 +1813,8 @@ select:focus {
 .detail-carousel {
   position: relative;
   width: 100%;
-  height: 420px;
+  aspect-ratio: 16 / 9;
+  max-height: 520px;
   border-radius: 1.2rem;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -2047,6 +2072,13 @@ select:focus {
   display: flex;
   gap: 2rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.left-column,
+.right-column {
+  min-width: 0;
 }
 
 .left-column {
@@ -2055,6 +2087,24 @@ select:focus {
 
 .right-column {
   flex: 1;
+}
+
+.contact-two-col-card {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.contact-two-col-side {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-two-col-divider {
+  width: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+  min-height: auto;
 }
 
 .detail-actions {
@@ -2117,6 +2167,35 @@ select:focus {
   .institute-meta {
     flex-direction: column;
     gap: 0.8rem;
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+
+  .detail-carousel {
+    height: auto;
+    min-height: 250px;
+  }
+
+  .detail-carousel-img {
+    position: relative;
+    height: auto;
+  }
+
+  .contact-two-col-card {
+    flex-direction: column;
+  }
+
+  .contact-two-col-divider {
+    width: 100%;
+    height: 1px;
+    margin: 0.5rem 0;
   }
 
   .detail-actions {
