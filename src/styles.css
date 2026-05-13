@@ -226,6 +226,9 @@ body {
 }
 
 /* Hero */
+.increase-width{
+  max-width:1440px;
+}
 
 .hero {
   position: relative;
