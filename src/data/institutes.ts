@@ -87,14 +87,14 @@ export const institutes: Institute[] = [
     location: "Sahibganj",
     facilities: ["A huge ground/lawn area in front.", "A big hall with a stage attached.", "A corridor in front of Institute.", "A Corridor in Back of Institute", "A Corridor in Side of Institute", "Separate Washrooms for Male and Female.", "Changing Room."],
     contact: {
-      name: "bikash chan",
+      name: "bikash chandra",
       phone: "+91 123456789",
       address: "Sahibganj - 700150",
       email: "bikash.031971@gov.in"
     },
     welfareInspector: {
-      name: "Lorem Ipsum",
-      email: "roypkj@gmail.com"
+      name: "bikash chandra",
+      email: "bikash.031971@gov.in"
     },
     secretary: {
       name: "Lorem Ipsum",
@@ -139,8 +139,8 @@ export const institutes: Institute[] = [
       email: "mdmeraj.2508@gov.in"
     },
     welfareInspector: {
-      name: "Lorem Ipsum",
-      email: "roypkj@gmail.com"
+      name: "meraj",
+      email: "mdmeraj.2508@gov.in"
     },
     secretary: {
       name: "Lorem Ipsum",
