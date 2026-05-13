@@ -718,7 +718,7 @@ const AdminPage: React.FC = () => {
                         {role === "admin" && <button className="admin-delete-btn" onClick={() => handleDelete(selected.id)}>Delete</button>}
                       </div>
 
-                      {(role === "admin" || role === "sr-dpo") && (
+                      {(role === "admin" || role === "sr-dpo" || role === "os" || role === "wi" || role === "dpo") && (
                         <div className="approval-stepper">
                           {APPROVAL_STEPS.map((step, i) => {
                             const stepIndex = APPROVAL_STEPS.findIndex((s) => s.status === (selected.approvalStatus || "pending_os"));
