@@ -122,7 +122,7 @@ export const AboutSection: React.FC = () => {
                   <div className="team-member-item">
                     <h5>Nirjan Kumar Tarapati</h5>
                     <p>(Office Superintendent)</p>
-                    <p>📧 "niranjantarapati@gmail.com</p>
+                    <p>📧 niranjantarapati@gmail.com</p>
                     <p>📞 +91 90461-96830</p>
                   </div>
                 </div>
