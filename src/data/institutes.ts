@@ -43,10 +43,10 @@ export const institutes: Institute[] = [
     location: "Malda",
     facilities: ["A huge ground/lawn area with front capacity of 1000.", "A big hall with AC and stage attached.", "A big Parking space near the institute.", "24*7 cctv surveillance provided", "Separate Washrooms for Male and Female.", "Chairs and Light are also provided"],
     contact: {
-      name: "Niranjan Kumar",
+      name: "Niranjan Kumar tarapati",
       phone: "+91 9046-196830",
       address: "MALDA RAILWAY COLONY, MALDA, WEST BENGAL - 732101",
-      email: "niranjan.2505@gov.in"
+      email: "niranjantarapati@gmail.com"
     },
     welfareInspector: {
       name: "Aditya Surya",
