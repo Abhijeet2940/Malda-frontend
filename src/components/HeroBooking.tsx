@@ -21,7 +21,7 @@ export const HeroBooking: React.FC = () => {
 
   return (
     <section id="home" className="hero">
-      <div className="container hero-grid">
+      <div className="container hero-grid increase-width">
         <div className="hero-text">
           <div className="hero-carousel">
             <div className="hero-carousel-images">
