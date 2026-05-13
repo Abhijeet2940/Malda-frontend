@@ -529,7 +529,7 @@ const AdminPage: React.FC = () => {
       setRemark("");
       setValidationStatus("");
       setValidationStatus("");
-      alert(`Booking ${action === "approved" ? "approved" : "rejected"} successfully!`);
+      alert(`Booking ${action === "approved" ? "confirmed and forwarded" : "rejected"} successfully!`);
     } catch (err) {
       alert("Failed to update booking status. Please try again.");
     }
