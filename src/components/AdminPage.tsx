@@ -96,7 +96,7 @@ const constructFileUrl = (fileType: string | null, bookingId: string | null): st
   };
 
   const mappedType = fileTypeMap[fileType] || fileType;
-  const apiBaseUrl = import.meta.env.VITE_API_URL ;
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
   const downloadUrl = `${apiBaseUrl}/api/requests/${bookingId}/download/${mappedType}`;
   
   return downloadUrl;
@@ -489,7 +489,9 @@ const AdminPage: React.FC = () => {
       if (selected?.id === id) setSelected(null);
       alert("Booking deleted successfully!");
     } catch (err) {
-      alert("Failed to delete booking. Please try again.");
+      console.error("Delete booking error:", err);
+      const msg = (err as any)?.message || String(err);
+      alert(`Failed to delete booking: ${msg}`);
     }
   };
 
