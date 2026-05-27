@@ -240,8 +240,16 @@ export const requestsAPI = {
     const response = await fetch(`${API_BASE_URL}/requests/${id}`, {
       method: "DELETE",
     });
-    if (!response.ok) throw new Error("Failed to delete booking");
-    return response.json();
+    const respText = await response.text();
+    if (!response.ok) {
+      const msg = `Failed to delete booking: ${response.status} ${respText}`;
+      throw new Error(msg);
+    }
+    try {
+      return JSON.parse(respText);
+    } catch {
+      return respText;
+    }
   },
 
   // Approve by OS
@@ -469,7 +477,7 @@ export const bookingAPI = {
 
   // Delete booking
   deleteBooking: async (id: string) => {
-    return requestsAPI.deleteRequest(id);
+    return requestsAPI.deleteBooking(id);
   },
 };
 
