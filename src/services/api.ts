@@ -1,5 +1,4 @@
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
-
 // Requests API calls (for booking form submissions)
 export const requestsAPI = {
   // Submit new booking request with multipart/form-data
@@ -27,6 +26,7 @@ export const requestsAPI = {
       aadhaarNumber: "aadhaarNumber",
       institute: "institute",
       bookingDate: "bookingDate",
+      bookingEndDate: "bookingEndDate",
       purpose: "purpose",
       bookingCategory: "bookingCategory",
       guests: "guests",
@@ -36,6 +36,7 @@ export const requestsAPI = {
       facilities: "facilities",
       specialRequirements: "specialRequirements",
       requestDate: "requestDate",
+      bookingDates: "bookingDates",
       guarantorName: "guarantorName",
       guarantorEmployeeId: "guarantorEmployeeId",
       guarantorPhone: "guarantorPhone",
@@ -70,7 +71,12 @@ export const requestsAPI = {
         return;
       }
       // Always send the field, even if empty, as backend might require all fields
-      formData.append(fieldsToSend[key], value !== null && value !== undefined ? String(value) : "");
+      // Special-case bookingDates (array) -> send as JSON string
+      if (key === 'bookingDates' && Array.isArray(bookingData.bookingDates)) {
+        formData.append(fieldsToSend[key], JSON.stringify(bookingData.bookingDates));
+      } else {
+        formData.append(fieldsToSend[key], value !== null && value !== undefined ? String(value) : "");
+      }
     });
 
     // Add file fields to FormData
@@ -331,6 +337,19 @@ export const requestsAPI = {
       },
     });
     if (!response.ok) throw new Error("Failed to reject request by SR-DPO");
+    return response.json();
+  },
+
+  // Notify user after submission (frontend helper to trigger backend email)
+  notifyOnSubmit: async (id: string) => {
+    const response = await fetch(`${API_BASE_URL}/requests/${id}/notify/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ note: "Booking submitted - send confirmation to applicant" }),
+    });
+    if (!response.ok) throw new Error("Failed to send submission notification");
     return response.json();
   },
 };
