@@ -98,6 +98,7 @@ const constructFileUrl = (fileType: string | null, bookingId: string | null): st
   const mappedType = fileTypeMap[fileType] || fileType;
   const apiBaseUrl = import.meta.env.VITE_API_URL ;
   const downloadUrl = `${apiBaseUrl}/api/requests/${bookingId}/download/${mappedType}`;
+  
   return downloadUrl;
 };
 
@@ -528,8 +529,13 @@ const AdminPage: React.FC = () => {
       setSelected(updated);
       setRemark("");
       setValidationStatus("");
-      setValidationStatus("");
-      alert(`Booking ${action === "approved" ? "confirmed and forwarded" : "rejected"} successfully!`);
+
+      const isFinalSrDpoApproval = role === "sr-dpo" && action === "approved" && newStatus === "approved";
+      if (isFinalSrDpoApproval) {
+        alert("Approved and email generated successfully");
+      } else {
+        alert(`Booking ${action === "approved" ? "confirmed and forwarded" : "rejected"} successfully!`);
+      }
     } catch (err) {
       alert("Failed to update booking status. Please try again.");
     }
@@ -715,7 +721,7 @@ const AdminPage: React.FC = () => {
                     <>
                       <div className="admin-detail-header">
                         <h3>Booking Details</h3>
-                        {role === "admin" && <button className="admin-delete-btn" onClick={() => handleDelete(selected.id)}>Delete</button>}
+                        {role === "admin" || role==="sr-dpo" && <button className="admin-delete-btn" onClick={() => handleDelete(selected.id)}>Delete</button>}
                       </div>
 
                       {(role === "admin" || role === "sr-dpo" || role === "os" || role === "wi" || role === "dpo") && (
@@ -779,7 +785,7 @@ const AdminPage: React.FC = () => {
                               </select>
                             </div>
                           )}
-                          {role === "os" && role === "wi" && role === "dpo" && (
+                          {role === "os" || role === "wi" || role === "dpo" && (
                             <label>Remark <span style={{ color: "#dc2626" }}>*</span></label>
                           )}
                           <textarea
