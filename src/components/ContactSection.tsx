@@ -71,7 +71,7 @@ export const ContactSection: React.FC = () => {
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                 </svg>
                 <div>
-                  <p><a href="mailto:niranjan.2505@gov.in">niranjan.2505@gov.in</a></p>
+                  <p><a href="mailto:niranjantarapati@gmail.com">niranjan.2505@gov.in</a></p>
                 </div>
               </div>
             </div>
