@@ -10,7 +10,6 @@ export const BookingFormPage: React.FC = () => {
   const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
   const [selectedDateBlocked, setSelectedDateBlocked] = useState(false);
   const [blockedDateCheckLoading, setBlockedDateCheckLoading] = useState(false);
-  const [dateAvailabilityMessage, setDateAvailabilityMessage] = useState<string>("");
   const [selectedInstituteBlocked, setSelectedInstituteBlocked] = useState(false);
   const [formData, setFormData] = useState({
     // Personal Information
@@ -35,6 +34,7 @@ export const BookingFormPage: React.FC = () => {
     // Booking Information
     institute: "",
     bookingDate: "",
+    bookingEndDate: "",
     purpose: "", // Combined field for both purpose and event type
     bookingCategory: "",
     guests: "1",
@@ -93,8 +93,15 @@ export const BookingFormPage: React.FC = () => {
       if (formData.institute && formData.bookingDate) {
         setBlockedDateCheckLoading(true);
         try {
-          const blocked = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
-          setSelectedDateBlocked(blocked);
+          const duration = Number(formData.eventDuration) || 1;
+          if (duration >= 2 && formData.bookingEndDate) {
+            const blockedStart = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
+            const blockedEnd = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingEndDate);
+            setSelectedDateBlocked(Boolean(blockedStart || blockedEnd));
+          } else {
+            const blocked = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
+            setSelectedDateBlocked(Boolean(blocked));
+          }
         } catch (err) {
           setSelectedDateBlocked(false);
         } finally {
@@ -180,7 +187,23 @@ export const BookingFormPage: React.FC = () => {
         alert("This date is already booked for the selected institute. Please choose another date.");
         return;
       }
-            if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isExMember || exMemberValidation)) {
+      // If event duration is multi-day ensure end date is provided and valid
+      const duration = Number(formData.eventDuration) || 1;
+      if (duration >= 2) {
+        if (!formData.bookingEndDate) {
+          alert("Please select an end date for multi-day booking.");
+          return;
+        }
+        const start = new Date(formData.bookingDate);
+        const end = new Date(formData.bookingEndDate);
+        const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        const requiredDiff = duration - 1;
+        if (diffDays !== requiredDiff) {
+          alert(`End date must be consecutive: it should be start date + ${requiredDiff} day(s).`);
+          return;
+        }
+      }
+      if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isExMember || exMemberValidation)) {
         setStep(2);
       } else {
         alert("Please fill all required fields");
@@ -193,24 +216,35 @@ export const BookingFormPage: React.FC = () => {
   };
 
   const selectedInstitute = formData.institute;
-  const selectedDateKey = selectedInstitute && formData.bookingDate ? `${selectedInstitute.toLowerCase()}|${formData.bookingDate}` : null;
-  const dateUnavailable = selectedDateKey ? unavailableDates.includes(selectedDateKey) : false;
+  const duration = Number(formData.eventDuration) || 1;
+  let dateUnavailable = false;
+  if (selectedInstitute && formData.bookingDate) {
+    if (duration >= 2 && formData.bookingEndDate) {
+      const key1 = `${selectedInstitute.toLowerCase()}|${formData.bookingDate}`;
+      const key2 = `${selectedInstitute.toLowerCase()}|${formData.bookingEndDate}`;
+      dateUnavailable = unavailableDates.includes(key1) || unavailableDates.includes(key2);
+    } else {
+      const key = `${selectedInstitute.toLowerCase()}|${formData.bookingDate}`;
+      dateUnavailable = unavailableDates.includes(key);
+    }
+  }
+
   const bookingAvailabilityText = selectedInstitute
     ? formData.bookingDate
       ? dateUnavailable
-        ? "Selected date is already booked for this institute. Please choose another date."
+        ? (duration >= 2 ? "One or more selected dates are already booked for this institute. Please choose different dates." : "Selected date is already booked for this institute. Please choose another date.")
         : selectedDateBlocked
-          ? "Selected date is blocked by the administration. Please choose another date."
-          : "Selected date is available for booking."
+          ? (duration >= 2 ? "One or more selected dates are blocked by the administration. Please choose different dates." : "Selected date is blocked by the administration. Please choose another date.")
+          : (duration >= 2 ? "Selected date range is available for booking." : "Selected date is available for booking.")
       : "Select a date to check availability."
     : "Select institute first to check availability.";
 
   const qrCodeMap: Record<string, { src: string; label: string }> = {
     malda: { src: maldaQR, label: "Malda Institute QR Code" },
-    sahibganj: { src: "/src/Assests/sahibganj-qr.png", label: "Sahibganj Institute QR Code" },
-    bhagalpur: { src: "/src/Assests/bhagalpur-qr.png", label: "Bhagalpur Institute QR Code" },
+    sahibganj: { src: "/src/Assets/sahibganj-qr.png", label: "Sahibganj Institute QR Code" },
+    bhagalpur: { src: "/src/Assets/bhagalpur-qr.png", label: "Bhagalpur Institute QR Code" },
   };
-  const selectedQr = qrCodeMap[formData.institute] || { src: "/src/Assests/Indian Railways.png", label: "Institute QR" };
+  const selectedQr = qrCodeMap[formData.institute] || { src: "/src/Assets/Indian Railways.png", label: "Institute QR" };
 
   // Calculate total payment amount based on booking category
   const calculatePaymentAmount = (): number => {
@@ -228,8 +262,10 @@ export const BookingFormPage: React.FC = () => {
       cleaningCharge = 2000;
       depositAmount = 4000;
     }
-    
-    return rateOfHiring + electricCharge + cleaningCharge + depositAmount;
+    const duration = Number(formData.eventDuration) || 1;
+    const multiplier = duration >= 2 ? duration : 1;
+
+    return rateOfHiring * multiplier + electricCharge * multiplier + cleaningCharge * multiplier + depositAmount;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -241,17 +277,44 @@ export const BookingFormPage: React.FC = () => {
       return;
     }
 
+    // Ensure end date present for multi-day booking
+    const durationCheck = Number(formData.eventDuration) || 1;
+    if (durationCheck >= 2) {
+      if (!formData.bookingEndDate) {
+        alert("Please select an end date for multi-day booking before submitting.");
+        return;
+      }
+      const start = new Date(formData.bookingDate);
+      const end = new Date(formData.bookingEndDate);
+      const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      const requiredDiff = durationCheck - 1;
+      if (diffDays !== requiredDiff) {
+        alert(`End date must be consecutive: it should be start date + ${requiredDiff} day(s).`);
+        return;
+      }
+    }
+
     if (formData.purpose && formData.eventDuration && formData.termsAccepted && formData.captcha && formData.refNo && formData.amountPaid && formData.accountNo && formData.ifscCode && formData.bankName) {
       try {
-        // Check if the selected date is blocked
-        const isDateBlocked = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
-        if (isDateBlocked) {
-          alert("The selected booking date is blocked by the administration. Please choose a different date.");
-          return;
+        // Check if the selected date(s) are blocked
+        const durationCheck = Number(formData.eventDuration) || 1;
+        if (durationCheck >= 2) {
+          const blockedStart = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
+          const blockedEnd = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingEndDate);
+          if (blockedStart || blockedEnd) {
+            alert("One or more selected booking dates are blocked by the administration. Please choose different dates.");
+            return;
+          }
+        } else {
+          const isDateBlocked = await blockedDatesAPI.isDateBlocked(formData.institute, formData.bookingDate);
+          if (isDateBlocked) {
+            alert("The selected booking date is blocked by the administration. Please choose a different date.");
+            return;
+          }
         }
 
         // Map form data to backend expected format
-        const submitData = {
+        const submitData: any = {
           ...formData,
           // Backend expects employeeEmail, set it to empty string since we removed the field
           employeeEmail: "",
@@ -261,6 +324,12 @@ export const BookingFormPage: React.FC = () => {
           facilities: formData.facility,
           // Calculate and send total amount based on booking category
           amount: calculatePaymentAmount(),
+          // If multi-day, include both dates for backend to block
+          ...(Number(formData.eventDuration) >= 2 && formData.bookingEndDate && {
+            bookingDates: [formData.bookingDate, formData.bookingEndDate],
+          }),
+          // Inform backend that final approval will be by SR-DPO
+          finalApprovalBy: "sr-dpo",
           // Backend expects requestDate, ensure it's set to today (local date)
           requestDate: new Date().toLocaleDateString('en-CA'),
           // For Non-Member E. Rly. Employee, map nonMemberEmployeeId to railwayEmployeeId
@@ -286,6 +355,15 @@ export const BookingFormPage: React.FC = () => {
         // Notify admin panel to refresh bookings if open
         window.dispatchEvent(new Event("bookingSubmitted"));
 
+        // Try to trigger a confirmation email to applicant via backend
+        try {
+          const id = response.requestId || response.id;
+          if (id) await requestsAPI.notifyOnSubmit(id);
+        } catch (err) {
+          // Non-blocking: notification failure should not stop flow
+          console.warn("Failed to send submission notification:", err);
+        }
+
         // Reset form
         setFormData({
           firstName: "",
@@ -306,6 +384,7 @@ export const BookingFormPage: React.FC = () => {
           aadhaarFile: null,
           institute: "",
           bookingDate: "",
+          bookingEndDate: "",
           purpose: "",
           bookingCategory: "",
           guests: "1",
@@ -392,24 +471,96 @@ export const BookingFormPage: React.FC = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="bookingDate">
-                      Booking Date <span className="required">*</span>
+                    <label htmlFor="eventDuration">
+                      Event Duration (Days) <span className="required">*</span>
                     </label>
                     <input
-                      type="date"
-                      id="bookingDate"
-                      name="bookingDate"
-                      value={formData.bookingDate}
+                      type="number"
+                      id="eventDuration"
+                      name="eventDuration"
+                      value={formData.eventDuration}
                       onChange={handleChange}
-                      min={new Date().toISOString().split('T')[0]}
-                      max={(() => {
-                        const today = new Date();
-                        const maxDate = new Date(today);
-                        maxDate.setMonth(today.getMonth() + 12);
-                        return maxDate.toISOString().split('T')[0];
-                      })()}
+                      min="1"
+                      max="2"
+                      placeholder="1-2 days"
                       required
                     />
+
+                    {Number(formData.eventDuration) >= 2 ? (
+                      <>
+                        <div className="form-row">
+                          <div className="form-group" style={{ flex: 1, marginRight: '0.5rem', marginTop:'1rem' }}>
+                            <label htmlFor="bookingDate">Start Date <span className="required">*</span></label>
+                            <input
+                              type="date"
+                              id="bookingDate"
+                              name="bookingDate"
+                              value={formData.bookingDate}
+                              onChange={handleChange}
+                              min={new Date().toISOString().split('T')[0]}
+                              max={(() => {
+                                const today = new Date();
+                                const maxDate = new Date(today);
+                                maxDate.setMonth(today.getMonth() + 12);
+                                return maxDate.toISOString().split('T')[0];
+                              })()}
+                              required
+                            />
+                          </div>
+                          <div className="form-group" style={{ flex: 1, marginLeft: '0.5rem', marginTop:'1rem ' }}>
+                            <label htmlFor="bookingEndDate">End Date <span className="required">*</span></label>
+                            <input
+                              type="date"
+                              id="bookingEndDate"
+                              name="bookingEndDate"
+                              value={formData.bookingEndDate}
+                              onChange={handleChange}
+                              min={(() => {
+                                if (!formData.bookingDate) return new Date().toISOString().split('T')[0];
+                                const startDate = new Date(formData.bookingDate);
+                                startDate.setDate(startDate.getDate() + 1);
+                                return startDate.toISOString().split('T')[0];
+                              })()}
+                              max={(() => {
+                                if (!formData.bookingDate) {
+                                  const today = new Date();
+                                  const maxDate = new Date(today);
+                                  maxDate.setMonth(today.getMonth() + 12);
+                                  return maxDate.toISOString().split('T')[0];
+                                }
+                                const startDate = new Date(formData.bookingDate);
+                                startDate.setDate(startDate.getDate() + 1);
+                                return startDate.toISOString().split('T')[0];
+                              })()}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <small style={{  color: '#666' }}>
+                          Note: End date must be the next day after the start date.
+                        </small>
+                      </>
+                    ) : (
+                      <>
+                        <label style={{ display: 'block', marginTop: '0.5rem' }} htmlFor="bookingDate">Booking Date <span className="required">*</span></label>
+                        <input
+                          type="date"
+                          id="bookingDate"
+                          name="bookingDate"
+                          value={formData.bookingDate}
+                          onChange={handleChange}
+                          min={new Date().toISOString().split('T')[0]}
+                          max={(() => {
+                            const today = new Date();
+                            const maxDate = new Date(today);
+                            maxDate.setMonth(today.getMonth() + 12);
+                            return maxDate.toISOString().split('T')[0];
+                          })()}
+                          required
+                        />
+                      </>
+                    )}
+
                     <small style={{ display: 'block', marginTop: '0.5rem', color: dateUnavailable || selectedDateBlocked ? '#dc2626' : '#16a34a' }}>
                       {blockedDateCheckLoading ? "Checking booking availability..." : bookingAvailabilityText}
                     </small>
@@ -846,24 +997,7 @@ export const BookingFormPage: React.FC = () => {
 
                 <div className="form-section-title">Event Booking Details</div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="eventDuration">
-                      Event Duration in  (Days) <span className="required">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="eventDuration"
-                      name="eventDuration"
-                      value={formData.eventDuration}
-                      onChange={handleChange}
-                      min="0"
-                      max="3"
-                      placeholder="1-3 days"
-                      required
-                    />
-                  </div>
-                </div>
+                {/* Event duration is selected in Step 1; payment summary below respects duration */}
 
                 {/* Payment Summary */}
                 {(() => {
@@ -885,21 +1019,28 @@ export const BookingFormPage: React.FC = () => {
                     depositAmount = 4000;
                   }
                   
-                  const total = rateOfHiring + electricCharge + cleaningCharge + depositAmount;
-                  
+                  const duration = Number(formData.eventDuration) || 1;
+                  const multiplier = duration >= 2 ? duration : 1;
+
+                  // Multiply rate/electric/cleaning by duration but keep deposit same
+                  const rateDisplay = rateOfHiring * multiplier;
+                  const electricDisplay = electricCharge * multiplier;
+                  const cleaningDisplay = cleaningCharge * multiplier;
+                  const total = rateDisplay + electricDisplay + cleaningDisplay + depositAmount;
+
                   return (
                     <div className="payment-summary">
                       <div className="payment-row">
                         <span>Rate of Hiring</span>
-                        <span>₹{rateOfHiring.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        <span>₹{rateDisplay.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
                       </div>
                       <div className="payment-row">
                         <span>Electric Charge</span>
-                        <span>₹{electricCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        <span>₹{electricDisplay.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
                       </div>
                       <div className="payment-row">
                         <span>Cleaning Charge</span>
-                        <span>₹{cleaningCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                        <span>₹{cleaningDisplay.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
                       </div>
                       <div className="payment-row">
                         <span>{depositName}</span>
@@ -1057,7 +1198,7 @@ export const BookingFormPage: React.FC = () => {
                     Verification <span className="required">*</span>
                   </label>
                   <ReCAPTCHA
-                    sitekey="6LfIu-csAAAAAB3Nzt6sB-1XIraVD3k06ZiaxZ_8"
+                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                     onChange={(value: string | null) => setFormData({ ...formData, captcha: value ?? "" })}
                   />
                 </div>
