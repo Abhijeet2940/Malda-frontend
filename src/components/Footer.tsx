@@ -68,7 +68,7 @@ export const Footer: React.FC = () => {
       <div className="footer-bottom">
         <p>
           All copyright reserved &copy; 2026. Made by TowerLink Network Pvt.
-          Ltd. under the guidance of Indrajeet Sr-dpo Malda Division Railway Institute.
+          Ltd. 
         </p>
       </div>
     </footer>
