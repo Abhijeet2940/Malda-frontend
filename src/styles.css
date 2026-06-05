@@ -80,7 +80,7 @@ body {
 .logo-line1 {
   font-weight: 700;
   font-size: 0.55rem;
-  text-al
+  text-align:center;
   color: var(--primary-deep);
 }
 
