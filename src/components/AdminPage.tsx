@@ -96,7 +96,7 @@ const constructFileUrl = (fileType: string | null, bookingId: string | null): st
   };
 
   const mappedType = fileTypeMap[fileType] || fileType;
-  const apiBaseUrl = import.meta.env.VITE_API_URL ;
+  const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
   const downloadUrl = `${apiBaseUrl}/api/requests/${bookingId}/download/${mappedType}`;
   
   return downloadUrl;
@@ -543,6 +543,60 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handleRevert = async () => {
+    if (!selected || !role) return;
+    if (!selected.id) {
+      alert("Cannot perform revert: booking ID is missing");
+      return;
+    }
+
+    if (!remark.trim()) {
+      alert("Remark is required for revert");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to revert this booking to the previous approval level?")) {
+      return;
+    }
+
+    try {
+      const entry = {
+        role: role.toUpperCase(),
+        action: "reverted",
+        at: new Date().toLocaleString(),
+        remark: remark.trim(),
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/requests/${selected.id}/revert`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "reverted", approvalEntry: entry, role }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to revert: ${response.status} ${errorText}`);
+      }
+
+      const updated = await response.json();
+      const updatedBookings = bookings.map((b) =>
+        b.id === selected.id ? updated : b
+      );
+      setBookings(updatedBookings);
+      setSelected(updated);
+      setRemark("");
+      setValidationStatus("");
+
+      const revertTarget = role === "dpo" ? "WI" : "DPO";
+      alert(`Booking reverted back to ${revertTarget} level successfully!`);
+    } catch (err) {
+      console.error("Revert error:", err);
+      alert("Failed to revert booking. Please try again.");
+    }
+  };
+
   const isSrDpo = role === "sr-dpo";
 
   const srDpoPending = bookings.filter((b) => 
@@ -798,12 +852,21 @@ const AdminPage: React.FC = () => {
                             required
                           />
                           <div className="approval-action-buttons">
-                            {role !== "os" && role !== "wi" && role !== "dpo" && (
+                            {role === "os" && (
+                              <button className="approve-btn" onClick={() => handleAction("approved")}>✓ Forwarded</button>
+                            )}
+                            {role === "wi" && (
+                              <button className="approve-btn" onClick={() => handleAction("approved")}>✓ Verified and Forwarded</button>
+                            )}
+                            {role === "dpo" && (
+                              <button className="approve-btn" onClick={() => handleAction("approved")}>✓ Checked and Forwarded</button>
+                            )}
+                            {role === "sr-dpo" && (
                               <button className="approve-btn" onClick={() => handleAction("approved")}>✓ Approve</button>
                             )}
-                            {role === "os" || role === "wi" || role === "dpo" ? (
-                              <button className="approve-btn" onClick={() => handleAction("approved")}>✓ Forwarded (with Remarks)</button>
-                            ) : null}
+                            {(role === "dpo" || role === "sr-dpo") && (
+                              <button className="revert-btn" style={{ background: "#f97316", color: "white" }} onClick={handleRevert}>↶ Revert Back</button>
+                            )}
                             {role !== "os" && role !== "wi" && (
                               <button className="reject-btn" onClick={() => handleAction("rejected")}>✗ Reject</button>
                             )}
@@ -835,11 +898,11 @@ const AdminPage: React.FC = () => {
                             ["Railway Employee ID", selected.railwayEmployeeId],
                             ["Non-Member Employee ID", selected.nonMemberEmployeeId],
                             ...(selected.bookingCategory === "Ex. Member / Retired Person" ? [["PPO Number", selected.ppoNumber]] : []),
-                            ...(selected.bookingCategory === "Non-Railway Person" ? [
-                              ["Guarantor Name", selected.guarantorName],
-                              ["Guarantor Employee ID", selected.guarantorEmployeeId],
-                              ["Guarantor Phone", selected.guarantorPhone]
-                            ] : []),
+                            // ...(selected.bookingCategory === "Non-Railway Person" ? [
+                            //   ["Guarantor Name", selected.guarantorName],
+                            //   ["Guarantor Employee ID", selected.guarantorEmployeeId],
+                            //   ["Guarantor Phone", selected.guarantorPhone]
+                            // ] : []),
                             ["Institute", selected.institute],
                             ["Booking Date", selected.bookingDate],
                             ["Purpose", selected.purpose],
@@ -848,7 +911,7 @@ const AdminPage: React.FC = () => {
                             ["Event Duration", selected.eventDuration || "—"], // Add event duration
                             ["Facilities", selected.facilities || "—"], // Add facilities
                             // ["Special Requirements", selected.specialRequirements || "—"], // Add special requirements
-                            ["Guests", selected.guests],
+                            // ["Guests", selected.guests],
                             ["Ref. NO", selected.refNo || "—"],
                             ["Amount Paid", selected.amountPaid || "—"],
                             ["Account No.", selected.accountNo || "—"],
@@ -870,8 +933,8 @@ const AdminPage: React.FC = () => {
                           {[
                             { label: "Aadhaar File", url: selected.aadhaarFile, icon: "🆔" },
                             { label: "Employee ID Proof", url: selected.employeeIdProof, icon: "👤" },
-                            { label: "Non-Member ID Proof", url: selected.nonMemberEmployeeIdProof, icon: "🆔" },
-                            ...(selected.bookingCategory === "Non-Railway Person" ? [{ label: "Guarantor ID Proof", url: selected.guarantorFile, icon: "🤝" }] : []),
+                            { label: "Other Railway Employee ID Proof", url: selected.nonMemberEmployeeIdProof, icon: "🆔" },
+                            // ...(selected.bookingCategory === "Non-Railway Person" ? [{ label: "Guarantor ID Proof", url: selected.guarantorFile, icon: "🤝" }] : []),
                             ...(selected.bookingCategory === "Ex. Member / Retired Person" ? [{ label: "PPO File", url: selected.ppoFile, icon: "📋" }] : []),
                             { label: "Payment Screenshot", url: selected.paymentScreenshot, icon: "💳" },
                           ].map(({ label, url, icon }) => (
@@ -950,36 +1013,26 @@ const AdminPage: React.FC = () => {
                                     : [];
                                   const allHistory = approvalHistoryEntries.filter((h) => {
                                     const historyRole = normalizeApprovalRole(h.role);
-                                    console.log('Approval history item:', h.role, '->', historyRole);
+                                    const isReverted = h.action === "reverted";
 
                                     if (normalizedRole === 'sr-dpo' || normalizedRole === 'admin') {
-                                      console.log(`${normalizedRole.toUpperCase()}: showing all history`);
                                       return true;
                                     }
 
                                     if (normalizedRole === 'dpo') {
-                                      const result = historyRole === 'os' || historyRole === 'wi' || historyRole === 'dpo';
-                                      console.log('DPO: showing OS/WI/DPO, item role:', historyRole, 'include?', result);
-                                      return result;
+                                      return historyRole === 'os' || historyRole === 'wi' || historyRole === 'dpo' || (historyRole === 'sr-dpo' && isReverted);
                                     }
 
                                     if (normalizedRole === 'wi') {
-                                      const result = historyRole === 'os' || historyRole === 'wi';
-                                      console.log('WI: showing OS/WI, item role:', historyRole, 'include?', result);
-                                      return result;
+                                      return historyRole === 'os' || historyRole === 'wi' || (historyRole === 'dpo' && isReverted);
                                     }
 
                                     if (normalizedRole === 'os') {
-                                      const result = historyRole === 'os';
-                                      console.log('OS: showing OS only, item role:', historyRole, 'include?', result);
-                                      return result;
+                                      return historyRole === 'os';
                                     }
 
-                                    console.log('Unknown role:', normalizedRole, 'defaulting to false');
                                     return false;
                                   });
-
-                                  console.log('Filtered history:', allHistory);
                                   
                                   // If no history items to show, display a message
                                   if (allHistory.length === 0) {
@@ -1029,10 +1082,28 @@ const AdminPage: React.FC = () => {
                                             borderRadius: "0.25rem",
                                             fontSize: "0.75rem",
                                             fontWeight: "bold",
-                                            color: h.action === "approved" ? "#065f46" : "#dc2626",
-                                            background: h.action === "approved" ? "#dcfce7" : "#fef2f2"
+                                            color: h.action === "approved" ? "#065f46" : h.action === "rejected" ? "#dc2626" : h.action === "reverted" ? "#0284c7" : "#666",
+                                            background: h.action === "approved" ? "#dcfce7" : h.action === "rejected" ? "#fef2f2" : h.action === "reverted" ? "#cffafe" : "#f3f4f6"
                                           }}>
-                                            {h.action === "approved" ? "✓ APPROVED" : "✗ REJECTED"}
+                                            {(() => {
+                                              const historyRole = normalizeApprovalRole(h.role);
+                                              if (h.action === "approved") {
+                                                if (historyRole === "os") return "Forwarded";
+                                                if (historyRole === "wi") return "Verified and Forwarded";
+                                                if (historyRole === "dpo") return "Checked and Forwarded";
+                                                if (historyRole === "sr-dpo") return "Approved";
+                                                return "✓ APPROVED";
+                                              }
+                                              if (h.action === "rejected") {
+                                                return "✗ REJECTED";
+                                              }
+                                              if (h.action === "reverted") {
+                                                if (historyRole === "sr-dpo") return "Reverted to DPO";
+                                                if (historyRole === "dpo") return "Reverted to WI";
+                                                return "↶ REVERTED";
+                                              }
+                                              return h.action.toUpperCase();
+                                            })()}
                                           </span>
                                         </td>
                                         <td style={{ padding: "0.75rem 1rem" }}>
