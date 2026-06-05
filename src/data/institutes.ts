@@ -38,10 +38,10 @@ export const institutes: Institute[] = [
     description:
       "Malda Railway Institute, located in Malda under Eastern Railway, is a well-established facility dedicated to promoting cultural, recreational, and community-oriented activities for railway employees and their families",
     fullDescription:
-      "Malda Railway Institute, located in Malda under Eastern Railway, is a well-established facility dedicated to promoting cultural, recreational, and community-oriented activities for railway employees and their families. It features a spacious auditorium, meeting hall, and other amenities ideal for hosting official programs, social gatherings, and cultural events.\n\nOver time, the institute has become a vibrant center for departmental functions, national celebrations, and talent showcases by railway staff and their families. Its accessible location, organized premises, and supportive environment make it a valuable venue for both formal and informal occasions.",
+      "Malda Railway Institute, located in Malda under Eastern Railway, is a well-established facility dedicated to promoting cultural, recreational, and community-oriented activities for railway employees and their families. It features a spacious auditorium and other amenities ideal for hosting official programs, social gatherings, and cultural events.\n\nOver time, the institute has become a vibrant center for departmental functions, national celebrations, and talent showcases by railway staff and their families. Its accessible location, organized premises, and supportive environment makes it a valuable venue for both formal and informal occasions.",
     established: 1910,
     location: "Malda",
-    facilities: ["A huge ground/lawn area with front capacity of 1000.", "A big hall with AC and stage attached.", "A big Parking space near the institute.", "24*7 cctv surveillance provided", "Separate Washrooms for Male and Female.", "Chairs and Light are also provided"],
+    facilities: ["A huge ground/lawn area with  capacity more than 500.", "A big hall with AC and stage attached.", "A big Parking space near the institute.", "24*7 cctv surveillance provided", "Separate Washrooms for Male and Female."],
     contact: {
       name: "Niranjan Kumar tarapati",
       phone: "+91 9046-196830",
@@ -57,19 +57,19 @@ export const institutes: Institute[] = [
       phone: "+91 9046-196830"
     },
     terms: [
-      "Allottees must adhere strictly to there respected timings for the use of the institute's facilities.",
+      "Allottees must strictly comply with their allotted booking schedules when using the institute's facilities.",
       "The railway institute is not responsible for any loss or theft of personal belongings of the occupants.",
-      "Allottes must ensure the booking should not exceed more than 3 days",
+      "Allottes must ensure the booking should not exceed more than 2 days",
       "Booking confirmation will be provided once approve By Senior authorithy",
       "Priority will be given to the booking of railway employees and their family members according to priority list.",
       "Sticking posters anywhere on the premises is strictly prohibited. Any defacement will be charged to the allottee.",
       "Consumption of alcoholic drinks, drugs, and playing cards is strictly prohibited within the institute premises.",
       "Only the function mentioned in the application form may be conducted. No additional or unrelated functions are permitted.",
-      "Subletting or misusing the premises for any purpose other than that stated will lead to cancellation and forfeiture of the security deposit under D&A Rules.",
+      "Subletting or misusing the premises for any purpose other than that stated will lead to cancellation , forfeiture of the security deposit and railway Employee will also be subjected to disciplinary action under D&A Rules.",
       "Allottees must inspect the facilities well in advance and ensure all required arrangements are in place prior to their event.",
       "The railway institute does not provide private security only CCTV survellience will be provided. Allottees must arrange their own security personnel if needed.",
       "Allottees are advised to secure their belongings. Use of personal locks for rooms during the event is recommended.",
-      "Blasting or use of firecrackers is strictly prohibited within Malda Institute premises."
+      "Blasting or use of firecrackers is strictly prohibited within railway institute premises."
     ],
     images: [
       maldaInstituePhoto,
@@ -115,7 +115,7 @@ export const institutes: Institute[] = [
       "The railway institute does not provide private security. Allottees must arrange their own security personnel if needed.",
       "Allottees are advised to secure their belongings. Use of personal locks for rooms during the event is recommended.",
       "Loudspeakers or DJ systems are strictly prohibited after 22:00 hrs outside the hall and after 23:00 hrs inside the hall.",
-      "Blasting or use of firecrackers is strictly prohibited within Sahibganj Institute premises."
+      "Blasting or use of firecrackers is strictly prohibited within railway institute premises."
     ],
     images: [
       sahebangRailwayInstitute,
@@ -161,7 +161,7 @@ export const institutes: Institute[] = [
       "The railway institute does not provide private security. Allottees must arrange their own security personnel if needed.",
       "Allottees are advised to secure their belongings. Use of personal locks for rooms during the event is recommended.",
       "Loudspeakers or DJ systems are strictly prohibited after 22:00 hrs outside the hall and after 23:00 hrs inside the hall.",
-      "Blasting or use of firecrackers is strictly prohibited within Bhagalpur Institute premises."
+      "Blasting or use of firecrackers is strictly prohibited within railway institute premises."
     ],
     images: [
       bhagalpurStage,
