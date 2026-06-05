@@ -252,6 +252,22 @@ export const requestsAPI = {
     }
   },
 
+  // Revert booking to previous approval level
+  revertBooking: async (id: string, approvalEntry: any, role: string) => {
+    const response = await fetch(`${API_BASE_URL}/requests/${id}/revert`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "reverted", approvalEntry, role }),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to revert booking: ${errorText}`);
+    }
+    return response.json();
+  },
+
   // Approve by OS
   approveByOS: async (id: string) => {
     const response = await fetch(`${API_BASE_URL}/requests/${id}/approve/os`, {
