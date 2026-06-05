@@ -37,7 +37,8 @@ export const BookingFormPage: React.FC = () => {
     bookingEndDate: "",
     purpose: "", // Combined field for both purpose and event type
     bookingCategory: "",
-    guests: "1",
+    guests: "300",
+    otherPurposeReason: "",
     // Event Booking Details (required by backend)
     eventDuration: "",
     facility: "AC", // Default to AC (removed from form)
@@ -142,9 +143,25 @@ export const BookingFormPage: React.FC = () => {
         [name]: file,
       });
     } else {
+      let newValue = value;
+      if (name === "eventDuration") {
+        const numeric = newValue.replace(/[^0-9]/g, "");
+        if (numeric === "") {
+          newValue = "";
+        } else {
+          const parsed = Number(numeric);
+          if (parsed <= 0) {
+            newValue = "1";
+          } else if (parsed > 2) {
+            newValue = "2";
+          } else {
+            newValue = String(parsed);
+          }
+        }
+      }
       setFormData({
         ...formData,
-        [name]: value,
+        [name]: newValue,
       });
     }
   };
@@ -203,7 +220,8 @@ export const BookingFormPage: React.FC = () => {
           return;
         }
       }
-      if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isExMember || exMemberValidation)) {
+      const otherPurposeValid = formData.purpose !== "Other" || formData.otherPurposeReason.trim() !== "";
+      if (baseValidation && (!isRailwayEmployee || railwayValidation) && (!isNonMemberEmployee || nonMemberValidation) && (!isExMember || exMemberValidation) && otherPurposeValid) {
         setStep(2);
       } else {
         alert("Please fill all required fields");
@@ -314,12 +332,18 @@ export const BookingFormPage: React.FC = () => {
         }
 
         // Map form data to backend expected format
+        const purposeValue = formData.purpose === "Other"
+          ? `Other - ${formData.otherPurposeReason.trim()}`
+          : formData.purpose;
+
         const submitData: any = {
           ...formData,
+          guests: formData.guests || "300",
           // Backend expects employeeEmail, set it to empty string since we removed the field
           employeeEmail: "",
           // Backend expects eventType, map from purpose
-          eventType: formData.purpose,
+          eventType: purposeValue,
+          purpose: purposeValue,
           // Backend expects facilities, map from facility (AC preference)
           facilities: formData.facility,
           // Calculate and send total amount based on booking category
@@ -387,7 +411,8 @@ export const BookingFormPage: React.FC = () => {
           bookingEndDate: "",
           purpose: "",
           bookingCategory: "",
-          guests: "1",
+          guests: "300",
+          otherPurposeReason: "",
           railwayEmployeeId: "",
           employeeIdProof: null,
           nonMemberEmployeeId: "",
@@ -404,6 +429,9 @@ export const BookingFormPage: React.FC = () => {
           specialRequirements: "",
           refNo: "",
           amountPaid: "",
+          accountNo: "",
+          ifscCode: "",
+          bankName: "",
           requestDate: new Date().toLocaleDateString('en-CA'),
           termsAccepted: false,
           captcha: "",
@@ -482,7 +510,7 @@ export const BookingFormPage: React.FC = () => {
                       onChange={handleChange}
                       min="1"
                       max="2"
-                      placeholder="1-2 days"
+                      placeholder="Enter 1 or 2 days, as required"
                       required
                     />
 
@@ -580,11 +608,27 @@ export const BookingFormPage: React.FC = () => {
                       <option value="">Select purpose</option>
                       <option value="Seminar">Seminar/Workshop</option>
                       <option value="Workshop">Wedding/Reception</option>
-                      <option value="Workshop">Cultural program</option>
+                      <option value="Cultural program">Cultural program</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
                 </div>
+                {formData.purpose === "Other" && (
+                  <div className="form-group">
+                    <label htmlFor="otherPurposeReason">
+                      Please specify the purpose <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="otherPurposeReason"
+                      name="otherPurposeReason"
+                      value={formData.otherPurposeReason}
+                      onChange={handleChange}
+                      placeholder="Enter the reason for Other"
+                      required
+                    />
+                  </div>
+                )}
 
                 <div className="form-group">
                   <label>
@@ -645,7 +689,7 @@ export const BookingFormPage: React.FC = () => {
                           }}
                           required
                         />
-                        Current Serving member of ER/NER
+                        Current Serving member of ER/NFR
                       </label>
                       <label className="radio-label">
                         <input
@@ -658,7 +702,7 @@ export const BookingFormPage: React.FC = () => {
                           }}
                           required
                         />
-                        Non Member E. Rly. Employee
+                        Other Railway Employee
                       </label>
                       <label className="radio-label">
                         <input
@@ -671,7 +715,7 @@ export const BookingFormPage: React.FC = () => {
                           }}
                           required
                         />
-                        Ex. Member / Retired Person
+                         Retired Employee
                       </label>
                     </div>
                   </div>
@@ -750,7 +794,7 @@ export const BookingFormPage: React.FC = () => {
                     <div className="form-row">
                       <div className="form-group">
                         <label htmlFor="ppoNumber">
-                          PPO /Account Number <span className="required">*</span>
+                          PPO/PSB Number <span className="required">*</span>
                         </label>
                         <input
                           type="text"
@@ -780,21 +824,6 @@ export const BookingFormPage: React.FC = () => {
                     </div>
                   </div>
                 )}
-
-                <div className="form-group">
-                  <label htmlFor="guests">
-                    Estimate Number of Guests <span className="required">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="guests"
-                    name="guests"
-                    value={formData.guests}
-                    onChange={handleChange}
-                    min="1"
-                    required
-                  />
-                </div>
 
                 <div className="form-section-title">Contact Information</div>
 
@@ -1068,7 +1097,7 @@ export const BookingFormPage: React.FC = () => {
                     <li>Take a screenshot of the successful payment</li>
                     <li>Upload the screenshot below</li>
                     <li>Upload the reference number</li>
-                    <li>Upload the  payement amount</li>
+                    <li>Upload the  payment amount</li>
                   </ol>
                   <div className="form-group">
                     <label htmlFor="paymentScreenshot">Upload Payment Screenshot <span className="required">*</span></label>
@@ -1171,11 +1200,11 @@ export const BookingFormPage: React.FC = () => {
                   <div id="termsConditions" className="terms-display">
                     <ol>
                       <li>Booking is valid only in the name of the person/institution mentioned; review begins after full payment via QR code in the form.</li>
-                      <li>Auditorium timing: Ceremonial events – 10 AM to 10 PM  . Any change requires prior approval.</li>
+                      <li>Auditorium timing: Ceremonial events – 10 AM to 10 AM(next day) . Any change requires prior approval.</li>
                       <li>In case of false information provided, the booking may be cancelled without any refund.</li>
-                      <li>Caution deposit is refundable within 14 days after adjustments. Cancellations: 75% refund if 30+ days prior; 50% if less than 30 days.</li>
-                      <li>Booking will be provided according to priority rule book.</li>
-                      <li>Institute is not responsible for AC/power issues (no emergency backup). Bookings may be rescheduled/cancelled by the administration due to natural or extraordinary circumstances.</li>
+                      <li>The caution deposit shall be refunded after inspection, subject to no damage being observed.</li>
+                      <li>Booking provide as per priority list however administration reserves the right to cancel/modify allotte as per administration requirements .</li>
+                      <li>Institute is not responsible for AC/power issues (no emergency backup will be provided).</li>
                     </ol>
                   </div>
                 </div>
