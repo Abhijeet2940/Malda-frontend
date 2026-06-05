@@ -30,8 +30,8 @@ export const Header: React.FC = () => {
         <div className="logo">
           <img src={indianRailwaysLogo} alt="Indian Railways" className="logo-img" />
           <div className="logo-text">
-            <span className="logo-line1">Malda Division Railway Institute</span>
-            <span className="logo-line2">Eastern Railway</span>
+            <span className="logo-line1">Railway Institute</span>
+            <span className="logo-line2">Eastern Railway, Malda</span>
 
           </div>
         </div>
