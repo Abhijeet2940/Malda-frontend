@@ -1227,7 +1227,7 @@ export const BookingFormPage: React.FC = () => {
                     Verification <span className="required">*</span>
                   </label>
                   <ReCAPTCHA
-                    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                    sitekey="6LfIu-csAAAAAEKFpBO6cMzmsdGLeQ_BNQtc88zQ"
                     onChange={(value: string | null) => setFormData({ ...formData, captcha: value ?? "" })}
                   />
                 </div>
