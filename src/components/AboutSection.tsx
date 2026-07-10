@@ -120,7 +120,7 @@ export const AboutSection: React.FC = () => {
                     <p>📞 +91 90020-24630</p>
                   </div>
                   <div className="team-member-item">
-                    <h5>Nirjan Kumar Tarapati</h5>
+                    <h5>Niranjan Kumar Tarapati</h5>
                     <p>(Office Superintendent)</p>
                     <p>📧 niranjantarapati@gmail.com</p>
                     <p>📞 +91 90461-96830</p>
